@@ -12,7 +12,7 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '16'
-    - uses: bahmutov/npm-install@v1
+    - uses: bahmutov/npm-install@v1.10.1
     - run: yarn build
     - run: echo $(node -e 'console.log(require("url").parse(require("./package.json").homepage).host)') > dist/CNAME
     - run: git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
