@@ -1,8 +1,8 @@
 import { createReactOidc } from "oidc-spa/react";
 
-const host= "http://localhost:8080";
-const realm= "myrealm";
-const clientId= "myclient";
+const host = `http://localhost:${(new URLSearchParams(window.location.search)).get("port") ?? "8080"}`;
+const realm = new URLSearchParams(window.location.search).get("realm") ?? "myrealm";
+const clientId = new URLSearchParams(window.location.search).get("client") ?? "myclient";
 
 export const { OidcProvider, useOidc } = createReactOidc({
     issuerUri: `${host}/realms/${realm}`,
