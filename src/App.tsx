@@ -93,12 +93,14 @@ export function App() {
                                     {keycloakAccountUrl}
                                 </Link>
                             </Typography>
+                            <br/>
                             <Button
                                 onClick={() => logout({ redirectTo: "home" })}
                                 variant="contained"
                             >
                                 Logout and return to login pages
                             </Button>
+                            <br/>
                             <Typography variant="caption">
                                 The source code of this test application is available here:
                                 <Link target="_blank" href="https://github.com/keycloakify/my-theme.keycloakify.dev/">
