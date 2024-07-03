@@ -4,6 +4,8 @@ import { App } from "./App.tsx";
 import { OidcProvider } from "oidc";
 import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
+import { getIsSafari } from "./tools/getIsSafari";
+import { NoSafari } from "./NoSafari";
 
 const theme = createTheme({
     palette: {
@@ -24,10 +26,20 @@ const theme = createTheme({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <OidcProvider>
-            <ThemeProvider theme={theme}>
-                <App />
-            </ThemeProvider>
-        </OidcProvider>
+        <ThemeProvider theme={theme}>
+            {(() => {
+
+                if (getIsSafari()) {
+                    return <NoSafari />;
+                }
+
+                return (
+                    <OidcProvider>
+                        <App />
+                    </OidcProvider>
+                );
+
+            })()}
+        </ThemeProvider>
     </React.StrictMode>
 );
