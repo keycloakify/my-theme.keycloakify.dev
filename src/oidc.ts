@@ -1,6 +1,6 @@
 import { createReactOidc } from "oidc-spa/react";
 
-const host = `http://127.0.0.1:${(new URLSearchParams(window.location.search)).get("port") ?? "8080"}`;
+const host = `http://localhost:${(new URLSearchParams(window.location.search)).get("port") ?? "8080"}`;
 const realm = new URLSearchParams(window.location.search).get("realm") ?? "myrealm";
 const clientId = new URLSearchParams(window.location.search).get("client") ?? "myclient";
 
