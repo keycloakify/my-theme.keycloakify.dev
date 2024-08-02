@@ -7,7 +7,8 @@ const clientId = new URLSearchParams(window.location.search).get("client") ?? "m
 export const { OidcProvider, useOidc } = createReactOidc({
     issuerUri: `${host}/realms/${realm}`,
     clientId: clientId,
-    publicUrl: import.meta.env.BASE_URL
+    publicUrl: import.meta.env.BASE_URL,
+    isAuthGloballyRequired: true
 });
 
 export const keycloakAccountUrl = `${host}/realms/${realm}/account?referrer=${clientId}&referrer_uri=${window.location.origin}`;
