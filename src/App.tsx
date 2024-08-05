@@ -6,6 +6,9 @@ import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import Alert from "@mui/material/Alert";
 import { OidcProvider } from "oidc";
+import Divider from "@mui/material/Divider";
+import ToolTip from "@mui/material/Tooltip";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export function App() {
 
@@ -54,7 +57,20 @@ export function App() {
 
 export function ContextualizedApp() {
 
-    const { logout, goToAuthServer, oidcTokens } = useOidc();
+    const { logout, goToAuthServer, backFromAuthServer, oidcTokens } = useOidc();
+
+    /*
+    const backFromAuthServer = {
+        extraQueryParams: {
+            kc_action: "UPDATE_PROFILE"
+        },
+        result: {
+            kc_action_status: "cancelled"
+        }
+    };
+    */
+
+    console.log(oidcTokens, logout, goToAuthServer);
 
     const { theme, classes } = useStyles();
 
@@ -72,57 +88,155 @@ export function ContextualizedApp() {
             <main className={classes.root}>
                 <div className={classes.content}>
                     <Typography variant="h2">
-                        You are now authenticated.
+                        You are now authenticated as <strong>{oidcTokens.decodedIdToken.preferred_username}</strong>
                     </Typography>
-                    <Typography variant="body1">
-                        Decoded OIDC ID Token JWT:
+
+                    <br />
+                    <Divider />
+                    <br />
+                    <Typography variant="h6">
+                        Decoded JWT of the Open ID Connect ID token:
                     </Typography>
                     <pre>
                         {JSON.stringify(oidcTokens.decodedIdToken, null, 2)}
                     </pre>
                     <br />
-                    <Button
-                        onClick={() => goToAuthServer({ 
-                            extraQueryParams: {
-                                kc_action: "UPDATE_PASSWORD"
-                            }
-                         })}
-                        variant="contained"
-                    >
-                        Go to the update password page of the login theme
-                    </Button>
+                    <Divider />
                     <br />
-                    <Button
-                        onClick={() => goToAuthServer({ 
-                            extraQueryParams: {
-                                kc_action: "UPDATE_PROFILE"
-                            }
-                         })}
-                        variant="contained"
-                    >
-                        Go to the page of the login theme where the user can update their profile information
-                    </Button>
+
+                    <Typography variant="h6">
+                        App-initiated actions
+                    </Typography>
+                    <Typography variant="body1">
+                        Actions that you can initiate from your App when the user is authenticated.
+                        {" "}<Link target="_blank" href="https://docs.oidc-spa.dev/documentation/user-account-management">Learn more</Link>. <br />
+                        They will redirect to pages of your <strong>login theme</strong>. (Not to the account theme)
+                    </Typography>
+
+                    <div className={classes.appInitiatedActionsButtonsWrapper}>
+
+
+                        <div className={classes.appInitiatedActionButton}>
+                            <Button
+                                onClick={() => goToAuthServer({
+                                    extraQueryParams: {
+                                        kc_action: "UPDATE_PASSWORD"
+                                    }
+                                })}
+                                variant="outlined"
+                            >
+                                Update password
+                            </Button>
+                            {backFromAuthServer?.extraQueryParams.kc_action === "UPDATE_PASSWORD" && (
+                                (() => {
+                                    switch (backFromAuthServer.result.kc_action_status) {
+                                        case "success":
+                                            return (
+                                                <Alert severity="success">
+                                                    Password updated
+                                                </Alert>
+                                            );
+                                        case "cancelled":
+                                            return (
+                                                <Alert severity="info">
+                                                    Password update cancelled
+                                                </Alert>
+                                            );
+                                    }
+                                })()
+                            )}
+                        </div>
+                        <div className={classes.appInitiatedActionButton}>
+                            <Button
+                                onClick={() => goToAuthServer({
+                                    extraQueryParams: {
+                                        kc_action: "UPDATE_PROFILE"
+                                    }
+                                })}
+                                variant="outlined"
+                            >
+                                Update profile
+                            </Button>
+                            {backFromAuthServer?.extraQueryParams.kc_action === "UPDATE_PROFILE" && (
+                                (() => {
+                                    switch (backFromAuthServer.result.kc_action_status) {
+                                        case "success":
+                                            return (
+                                                <Alert severity="success">
+                                                    Profile updated
+                                                </Alert>
+                                            );
+                                        case "cancelled":
+                                            return (
+                                                <Alert severity="info">
+                                                    Profile unchanged
+                                                </Alert>
+                                            );
+                                    }
+                                })()
+                            )}
+                        </div>
+                        <ToolTip title={
+                            <Typography variant="body2">
+                                To work this must be enabled in the Keycloak admin console.
+                                {" "}<Link target="_blank" href="https://docs.oidc-spa.dev/resources/usage-with-keycloak">
+                                    Learn how to enable it
+                                </Link> (See at the bottom)
+                            </Typography>
+                        }>
+                            <Button
+                                className={classes.appInitiatedActionButton}
+                                color="error"
+                                onClick={() => goToAuthServer({
+                                    extraQueryParams: {
+                                        kc_action: "delete_account"
+                                    }
+                                })}
+                                variant="outlined"
+                            >
+                                Delete account
+                            </Button>
+                        </ToolTip>
+
+                    </div>
+
+                    <br />
+                    <Divider />
+                    <br />
+
+                    <Typography variant="h6">
+                        Access to your account theme
+                    </Typography>
+                    <Typography variant="body1">
+                        If you are implementing a login theme, it's accessible at the following URL:
+                    </Typography>
                     <br />
                     <Typography variant="body1">
-                        If you are implementing an account theme, it's accessible here:
                         <Link href={keycloakAccountUrl} target="_blank" rel="noopener noreferrer">
                             {keycloakAccountUrl}
                         </Link>
                     </Typography>
+
                     <br />
-                    <Button
-                        onClick={() => logout({ redirectTo: "home" })}
-                        variant="contained"
-                    >
-                        Logout and return to login pages
-                    </Button>
+                    <Divider />
                     <br />
-                    <Typography variant="caption">
-                        The source code of this test application is available here:
-                        <Link target="_blank" href="https://github.com/keycloakify/my-theme.keycloakify.dev/">
-                            keycloakify/my-theme
-                        </Link>
-                    </Typography>
+
+                    <div className={classes.bottomWrapper}>
+                        <Button
+                            onClick={() => logout({ redirectTo: "home" })}
+                            startIcon={<LogoutIcon />}
+                            variant="outlined"
+                        >
+                            Logout and return to login pages
+                        </Button>
+                        <br />
+                        <Typography variant="caption">
+                            The source code of this test application is available at{" "}
+                            <Link target="_blank" href="https://github.com/keycloakify/my-theme.keycloakify.dev/">
+                                keycloakify/my-theme
+                            </Link>
+                        </Typography>
+                    </div>
                 </div>
             </main>
         </>
@@ -149,10 +263,39 @@ const useStyles = tss
         },
         content: {
             backgroundColor: theme.palette.background.paper,
-            padding: theme.spacing(4)
+            padding: theme.spacing(4),
+            borderRadius: theme.shape.borderRadius,
+            "&:hover": {
+                boxShadow: `inset 0 0 0.5px 1px hsla(0, 0%,  
+                    100%, 0.075),
+                    0 0 0 1px hsla(0, 0%, 0%, 0.05),
+                    0 0.3px 0.4px hsla(0, 0%, 0%, 0.02),
+                    0 0.9px 1.5px hsla(0, 0%, 0%, 0.045),
+                    0 3.5px 6px hsla(0, 0%, 0%, 0.09);`
+            },
+
         },
         decodedIdToken: {
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: theme.shape.borderRadius
+        },
+        appInitiatedActionsButtonsWrapper: {
+            display: "flex",
+            alignItems: "baseline",
+            gap: theme.spacing(2),
+            marginTop: theme.spacing(2),
+            marginBottom: theme.spacing(2)
+        },
+        appInitiatedActionButton: {
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: theme.spacing(2)
+        },
+        bottomWrapper: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "end"
         }
     }));
