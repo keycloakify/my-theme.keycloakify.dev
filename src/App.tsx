@@ -9,44 +9,66 @@ import { OidcProvider } from "oidc";
 import Divider from "@mui/material/Divider";
 import ToolTip from "@mui/material/Tooltip";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export function App() {
+
+    const { css } = useStyles();
 
     return (
         <OidcProvider
             ErrorFallback={({ initializationError }) => (
-                <Alert severity="error" title={initializationError.type}>
-                    {(() => {
-                        switch (initializationError.type) {
-                            case "server down":
-                                return (
-                                    <>
-                                        Your local Keycloak doesn't seem to be up and running.<br />
-                                        To start it, simply run the following command in the root directory of your Keycloakify project:<br />
-                                        <code>npx keycloakify start-keycloak</code><br />
-                                        Or, if you are in a monorepo:<br />
-                                        <code>npx keycloakify start-keycloak --project packages/keycloak-theme</code>&nbsp;(for example)<br />
-                                    </>
-                                );
-                            case "bad configuration":
-                                return (
-                                    <>
-                                        You've modified the configuration of the Keycloak server in a way that is incompatible with
-                                        <Link target="_blank" href="https://github.com/keycloakify/my-theme.keycloakify.dev">
-                                            this test application
-                                        </Link>.
-                                    </>
-                                );
-                            case "unknown":
-                                return initializationError.message;
-                        }
-                    })()}
-                </Alert>
+                <div className={css({
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                })}>
+                    <Alert severity="error" title={initializationError.type}>
+                        {(() => {
+                            switch (initializationError.type) {
+                                case "server down":
+                                    return (
+                                        <>
+                                            Your local Keycloak doesn't seem to be running.<br />
+                                            Please refer to the <Link target="_blank" href="https://docs.keycloakify.dev/testing-your-theme/in-a-keycloak-docker-container">documentation</Link>.
+                                        </>
+                                    );
+                                case "bad configuration":
+                                    return (
+                                        <>
+                                            You've modified the configuration of the Keycloak server in a way that is incompatible with
+                                            <Link target="_blank" href="https://github.com/keycloakify/my-theme.keycloakify.dev">
+                                                this test application
+                                            </Link>.<br/>
+                                            You can open the console to see the error message.
+                                        </>
+                                    );
+                                case "unknown":
+                                    return initializationError.message;
+                            }
+                        })()}
+                    </Alert>
+                </div>
             )}
             fallback={
-                <Typography variant="h4">
-                    Redirecting to your local Keycloak server...
-                </Typography>
+                <div className={css({
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                })}>
+                    <Typography variant="h4">
+                        <CircularProgress
+                            className={css({
+                                position: "relative",
+                                top: "0.20em"
+                            })}
+                        />
+                        &nbsp;
+                        Redirecting to your local Keycloak server...
+                    </Typography>
+                </div>
             }
         >
             <ContextualizedApp />

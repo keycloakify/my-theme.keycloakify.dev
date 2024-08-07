@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./App.tsx";
-import { OidcProvider } from "oidc";
 import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
 import { getIsSafari } from "./tools/getIsSafari";
@@ -33,11 +32,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     return <NoSafari />;
                 }
 
-                return (
-                    <OidcProvider>
-                        <App />
-                    </OidcProvider>
-                );
+                return <App />;
 
             })()}
         </ThemeProvider>
