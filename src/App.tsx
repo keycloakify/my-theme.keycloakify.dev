@@ -181,10 +181,10 @@ export function ContextualizedApp() {
                         </div>
                         <ToolTip title={
                             <Typography variant="body2">
-                                To work this must be enabled in the Keycloak admin console.
+                                If this doesn't work on your Keycloak server it's because the account deletion feature is disabled by default.
                                 {" "}<Link target="_blank" href="https://docs.oidc-spa.dev/resources/usage-with-keycloak">
-                                    Learn how to enable it
-                                </Link> (See at the bottom)
+                                    See how to enable it.
+                                </Link> (Bottom of the documentation page)
                             </Typography>
                         }>
                             <Button
