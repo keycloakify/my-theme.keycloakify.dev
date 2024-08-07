@@ -57,10 +57,7 @@ export const { OidcProvider, useOidc } = (() => {
         publicUrl,
         isAuthGloballyRequired,
         decodedIdTokenSchema: {
-            parse: decodedIdToken => decodedIdToken as { 
-                preferred_username: string; 
-                locale?: string[];
-            }
+            parse: decodedIdToken => decodedIdToken as { preferred_username: string; }
         }
     });
 

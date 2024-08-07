@@ -59,8 +59,6 @@ export function ContextualizedApp() {
 
     const { logout, goToAuthServer, backFromAuthServer, oidcTokens } = useOidc();
 
-    const ui_locales= oidcTokens.decodedIdToken.locale?.[0] ?? "en";
-
     /*
     const backFromAuthServer = {
         extraQueryParams: {
@@ -121,8 +119,7 @@ export function ContextualizedApp() {
                             <Button
                                 onClick={() => goToAuthServer({
                                     extraQueryParams: {
-                                        kc_action: "UPDATE_PASSWORD",
-                                        ui_locales
+                                        kc_action: "UPDATE_PASSWORD"
                                     }
                                 })}
                                 variant="outlined"
@@ -152,8 +149,7 @@ export function ContextualizedApp() {
                             <Button
                                 onClick={() => goToAuthServer({
                                     extraQueryParams: {
-                                        kc_action: "UPDATE_PROFILE",
-                                        ui_locales
+                                        kc_action: "UPDATE_PROFILE"
                                     }
                                 })}
                                 variant="outlined"
@@ -192,8 +188,7 @@ export function ContextualizedApp() {
                                 color="error"
                                 onClick={() => goToAuthServer({
                                     extraQueryParams: {
-                                        kc_action: "delete_account",
-                                        ui_locales
+                                        kc_action: "delete_account"
                                     }
                                 })}
                                 variant="outlined"
