@@ -36,7 +36,7 @@ export const { OidcProvider, useOidc } = (() => {
                     "name": "Test User",
                     "favourite_pet": "cat",
                     "preferred_username": "testuser",
-                    "locale": "fr",
+                    "locale": "en",
                     "given_name": "Test",
                     "family_name": "User",
                     "email": "testuser@gmail.com"
@@ -57,7 +57,10 @@ export const { OidcProvider, useOidc } = (() => {
         publicUrl,
         isAuthGloballyRequired,
         decodedIdTokenSchema: {
-            parse: decodedIdToken => decodedIdToken as { preferred_username: string; }
+            parse: decodedIdToken => decodedIdToken as { 
+                preferred_username: string; 
+                locale?: string[];
+            }
         }
     });
 
