@@ -1,5 +1,4 @@
 import { useOidc, keycloakAccountUrl } from "oidc";
-import { GlobalStyles } from "tss-react";
 import { tss } from "tss-react/mui";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -40,7 +39,7 @@ export function App() {
                                             You've modified the configuration of the Keycloak server in a way that is incompatible with
                                             <Link target="_blank" href="https://github.com/keycloakify/my-theme.keycloakify.dev">
                                                 this test application
-                                            </Link>.<br/>
+                                            </Link>.<br />
                                             You can open the console to see the error message.
                                         </>
                                     );
@@ -92,20 +91,10 @@ export function ContextualizedApp() {
     };
     */
 
-
-    const { theme, classes } = useStyles();
+    const { classes } = useStyles();
 
     return (
         <>
-            <GlobalStyles styles={{
-                "html, body": {
-                    margin: 0,
-                    padding: 0,
-                },
-                body: {
-                    backgroundColor: theme.palette.background.default
-                }
-            }} />
             <main className={classes.root}>
                 <div className={classes.content}>
                     <Typography variant="h2">
