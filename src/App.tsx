@@ -114,7 +114,7 @@ export function ContextualizedApp() {
                     <Divider />
                     <br />
 
-                    <Typography variant="h6">
+                    <Typography variant="h6" sx={{ mb: 2 }}>
                         App-initiated actions
                     </Typography>
                     <Typography variant="body1">
@@ -214,13 +214,12 @@ export function ContextualizedApp() {
                     <Divider />
                     <br />
 
-                    <Typography variant="h6">
+                    <Typography variant="h6" sx={{ mb: 2 }}>
                         Access to your account theme
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ mb: 1 }}>
                         If you are implementing a login theme, it's accessible at the following URL:
                     </Typography>
-                    <br />
                     <Typography variant="body1">
                         <Link href={keycloakAccountUrl} target="_blank" rel="noopener noreferrer">
                             {keycloakAccountUrl}
