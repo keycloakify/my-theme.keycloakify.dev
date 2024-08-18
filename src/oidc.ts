@@ -46,13 +46,22 @@ export const { OidcProvider, useOidc } = (() => {
 
     }
 
-    const host = `http://localhost:${(new URLSearchParams(window.location.search)).get("port") ?? "8080"}`;
     const realm = new URLSearchParams(window.location.search).get("realm") ?? "myrealm";
+
+    const issuerUri = (() => {
+
+        const port = (new URLSearchParams(window.location.search)).get("port") ?? "8080";
+        const kcHttpRelativePath = (new URLSearchParams(window.location.search)).get("kcHttpRelativePath") ?? "";
+
+        return `http://localhost:${port}${kcHttpRelativePath}/realms/${realm}`;
+
+    })();
+
     const clientId = new URLSearchParams(window.location.search).get("client") ?? "myclient";
-    keycloakAccountUrl = `${host}/realms/${realm}/account?referrer=${clientId}&referrer_uri=${window.location.origin}`;
+    keycloakAccountUrl = `${issuerUri}/account?referrer=${clientId}&referrer_uri=${window.location.origin}`;
 
     return createReactOidc({
-        issuerUri: `${host}/realms/${realm}`,
+        issuerUri,
         clientId,
         publicUrl,
         isAuthGloballyRequired,
