@@ -218,7 +218,7 @@ export function ContextualizedApp() {
                         Access to your account theme
                     </Typography>
                     <Typography variant="body1" sx={{ mb: 1 }}>
-                        If you are implementing a login theme, it's accessible at the following URL:
+                        If you are implementing an account theme, it's accessible at the following URL:
                     </Typography>
                     <Typography variant="body1">
                         <Link href={keycloakAccountUrl} target="_blank" rel="noopener noreferrer">
