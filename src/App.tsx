@@ -30,6 +30,7 @@ export function App() {
                                     return (
                                         <>
                                             Your local Keycloak doesn't seem to be running.<br />
+                                            If you are using uBlock Origin, or some other ad blocker, it might be blocking the redirection.<br />
                                             Please refer to the <Link target="_blank" href="https://docs.keycloakify.dev/testing-your-theme/in-a-keycloak-docker-container">documentation</Link>.
                                         </>
                                     );
