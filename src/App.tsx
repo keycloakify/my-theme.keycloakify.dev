@@ -81,17 +81,6 @@ export function ContextualizedApp() {
 
     const { logout, goToAuthServer, backFromAuthServer, oidcTokens } = useOidc();
 
-    /*
-    const backFromAuthServer = {
-        extraQueryParams: {
-            kc_action: "UPDATE_PROFILE"
-        },
-        result: {
-            kc_action_status: "cancelled"
-        }
-    };
-    */
-
     const { classes } = useStyles();
 
     return (
