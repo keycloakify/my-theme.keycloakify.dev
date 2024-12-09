@@ -1,8 +1,6 @@
 import { createReactOidc } from "oidc-spa/react";
 import { createMockReactOidc } from "oidc-spa/mock/react";
 
-let keycloakAccountUrl: string;
-
 export const { OidcProvider, useOidc } = (() => {
 
     const isAuthGloballyRequired = true;
@@ -10,8 +8,6 @@ export const { OidcProvider, useOidc } = (() => {
     const publicUrl = import.meta.env.BASE_URL;
 
     if (import.meta.env.DEV) {
-
-        keycloakAccountUrl = `http://localhost:8080/realms/myream/account?referrer=myclient&referrer_uri=${window.location.origin}`;
 
         return createMockReactOidc({
             isUserInitiallyLoggedIn: true,
@@ -42,6 +38,10 @@ export const { OidcProvider, useOidc } = (() => {
                     email: "testuser@gmail.com"
                 }
             },
+            mockedParams: {
+                issuerUri: "http://localhost:8080/realms/myrealm",
+                clientId: "myclient"
+            }
         });
 
     }
@@ -84,7 +84,6 @@ export const { OidcProvider, useOidc } = (() => {
     })();
 
     const clientId = getParam({ name: "client", defaultValue: "myclient" });
-    keycloakAccountUrl = `${issuerUri}/account?referrer=${clientId}&referrer_uri=${window.location.origin}`;
 
     return createReactOidc({
         issuerUri,
@@ -99,7 +98,24 @@ export const { OidcProvider, useOidc } = (() => {
 
 })();
 
-export { keycloakAccountUrl };
+/** 
+ * Extract last portion of the path
+ * Example "http://localhost:8080/realms/myrealm" => "myrealm"
+ */
+export function readRealm(params: { issuerUri: string }): string {
+
+    const { issuerUri } = params;
+
+    const match = issuerUri.match(/realms\/([^/]+)\/?/);
+
+    if( match === null ){
+        throw new Error(`Invalid issuerUri: ${issuerUri}`);
+    }
+
+    return match[1];
+
+}
+
 
 
 
