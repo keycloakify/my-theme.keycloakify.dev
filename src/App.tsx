@@ -11,70 +11,86 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export function App() {
+  const { css } = useStyles();
 
-    const { css } = useStyles();
-
-    return (
-        <OidcProvider
-            ErrorFallback={({ initializationError }) => (
-                <div className={css({
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100vh",
-                })}>
-                    <Alert severity="error" title={initializationError.type}>
-                        {(() => {
-                            switch (initializationError.type) {
-                                case "server down":
-                                    return (
-                                        <>
-                                            Your local Keycloak doesn't seem to be running.<br />
-                                            If you are using uBlock Origin, or some other ad blocker, it might be blocking the redirection.<br />
-                                            Please refer to the <Link target="_blank" href="https://docs.keycloakify.dev/testing-your-theme/in-a-keycloak-docker-container">documentation</Link>.
-                                        </>
-                                    );
-                                case "bad configuration":
-                                    return (
-                                        <>
-                                            You've modified the configuration of the Keycloak server in a way that is incompatible with
-                                            <Link target="_blank" href="https://github.com/keycloakify/my-theme.keycloakify.dev">
-                                                this test application
-                                            </Link>.<br />
-                                            You can open the console to see the error message.
-                                        </>
-                                    );
-                                case "unknown":
-                                    return initializationError.message;
-                            }
-                        })()}
-                    </Alert>
-                </div>
-            )}
-            fallback={
-                <div className={css({
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100vh",
-                })}>
-                    <Typography variant="h4">
-                        <CircularProgress
-                            className={css({
-                                position: "relative",
-                                top: "0.20em"
-                            })}
-                        />
-                        &nbsp;
-                        Redirecting to your local Keycloak server...
-                    </Typography>
-                </div>
-            }
+  return (
+    <OidcProvider
+      ErrorFallback={({ initializationError }) => (
+        <div
+          className={css({
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+          })}
         >
-            <ContextualizedApp />
-        </OidcProvider>
-    );
-
+          <Alert severity="error" title={initializationError.type}>
+            {(() => {
+              switch (initializationError.type) {
+                case "server down":
+                  return (
+                    <>
+                      Your local Keycloak doesn't seem to be running.
+                      <br />
+                      If you are using uBlock Origin, or some other ad blocker,
+                      it might be blocking the redirection.
+                      <br />
+                      Please refer to the{" "}
+                      <Link
+                        target="_blank"
+                        href="https://docs.keycloakify.dev/testing-your-theme/in-a-keycloak-docker-container"
+                      >
+                        documentation
+                      </Link>
+                      .
+                    </>
+                  );
+                case "bad configuration":
+                  return (
+                    <>
+                      You've modified the configuration of the Keycloak server
+                      in a way that is incompatible with
+                      <Link
+                        target="_blank"
+                        href="https://github.com/keycloakify/my-theme.keycloakify.dev"
+                      >
+                        this test application
+                      </Link>
+                      .<br />
+                      You can open the console to see the error message.
+                    </>
+                  );
+                case "unknown":
+                  return initializationError.message;
+              }
+            })()}
+          </Alert>
+        </div>
+      )}
+      fallback={
+        <div
+          className={css({
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+          })}
+        >
+          <Typography variant="h4">
+            <CircularProgress
+              className={css({
+                position: "relative",
+                top: "0.20em",
+              })}
+            />
+            &nbsp; Redirecting to your local Keycloak server...
+          </Typography>
+        </div>
+      }
+    >
+      <ContextualizedApp />
+    </OidcProvider>
+  );
 }
 
 export function ContextualizedApp() {
@@ -123,8 +139,8 @@ export function ContextualizedApp() {
               Learn more
             </Link>
             . <br />
-            They will redirect to the <strong>login UI</strong>.
-            (and not to the account UI)
+            They will redirect to the <strong>login UI</strong>. (and not to the
+            account UI)
           </Typography>
 
           <div className={classes.appInitiatedActionsButtonsWrapper}>
@@ -241,23 +257,19 @@ export function ContextualizedApp() {
           </Typography>
           <Typography variant="body1" sx={{ mb: 1 }}>
             Link to the Keycloak Admin UI for the <code>{realm}</code> realm.
-            Note that user <code>{oidcTokens.decodedIdToken.preferred_username}</code> has to have the <code>realm-admin</code> role to access this page:
+            Note that user{" "}
+            <code>{oidcTokens.decodedIdToken.preferred_username}</code> has to
+            have the <code>realm-admin</code> role to access this page:
           </Typography>
           <Typography variant="body1">
-            {(()=>{
+            {(() => {
+              const url = `${new URL(issuerUri).origin}/admin/${realm}/console`;
 
-                const url = `${new URL(issuerUri).origin}/admin/${realm}/console`;
-
-                return (
-            <Link
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {url}
-            </Link>
-                );
-
+              return (
+                <Link href={url} target="_blank" rel="noopener noreferrer">
+                  {url}
+                </Link>
+              );
             })()}
           </Typography>
 
