@@ -246,7 +246,7 @@ export function ContextualizedApp() {
           <Typography variant="body1">
             {(()=>{
 
-                const url = `${issuerUri}/admin/${realm}/console`;
+                const url = `${new URL(issuerUri).origin}/admin/${realm}/console`;
 
                 return (
             <Link
