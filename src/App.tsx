@@ -304,7 +304,6 @@ export function ContextualizedApp() {
 
 const useStyles = tss.withName({ App }).create(({ theme }) => ({
   root: {
-    height: "100vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -328,6 +327,7 @@ const useStyles = tss.withName({ App }).create(({ theme }) => ({
                     0 0.9px 1.5px hsla(0, 0%, 0%, 0.045),
                     0 3.5px 6px hsla(0, 0%, 0%, 0.09);`,
     },
+    margin: theme.spacing(6)
   },
   decodedIdToken: {
     border: `1px solid ${theme.palette.divider}`,
