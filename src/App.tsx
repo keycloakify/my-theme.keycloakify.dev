@@ -24,46 +24,37 @@ export function App() {
             height: "100vh",
           })}
         >
-          <Alert severity="error" title={initializationError.type}>
-            {(() => {
-              switch (initializationError.type) {
-                case "server down":
-                  return (
-                    <>
-                      Your local Keycloak doesn't seem to be running.
-                      <br />
-                      If you are using uBlock Origin, or some other ad blocker,
-                      it might be blocking the redirection.
-                      <br />
-                      Please refer to the{" "}
-                      <Link
-                        target="_blank"
-                        href="https://docs.keycloakify.dev/testing-your-theme/in-a-keycloak-docker-container"
-                      >
-                        documentation
-                      </Link>
-                      .
-                    </>
-                  );
-                case "bad configuration":
-                  return (
-                    <>
-                      You've modified the configuration of the Keycloak server
-                      in a way that is incompatible with
-                      <Link
-                        target="_blank"
-                        href="https://github.com/keycloakify/my-theme.keycloakify.dev"
-                      >
-                        this test application
-                      </Link>
-                      .<br />
-                      You can open the console to see the error message.
-                    </>
-                  );
-                case "unknown":
-                  return initializationError.message;
-              }
-            })()}
+          <Alert severity="error" title="Initialization error">
+            {initializationError.isAuthServerLikelyDown ? (
+              <>
+                Your local Keycloak doesn't seem to be running.
+                <br />
+                If you are using uBlock Origin, or some other ad blocker, it
+                might be blocking the redirection.
+                <br />
+                Please refer to the{" "}
+                <Link
+                  target="_blank"
+                  href="https://docs.keycloakify.dev/testing-your-theme/in-a-keycloak-docker-container"
+                >
+                  documentation
+                </Link>
+                .
+              </>
+            ) : (
+              <>
+                You've modified the configuration of the Keycloak server in a
+                way that is incompatible with
+                <Link
+                  target="_blank"
+                  href="https://github.com/keycloakify/my-theme.keycloakify.dev"
+                >
+                  this test application
+                </Link>
+                .<br />
+                You can open the console to see the error message.
+              </>
+            )}
           </Alert>
         </div>
       )}
@@ -327,7 +318,7 @@ const useStyles = tss.withName({ App }).create(({ theme }) => ({
                     0 0.9px 1.5px hsla(0, 0%, 0%, 0.045),
                     0 3.5px 6px hsla(0, 0%, 0%, 0.09);`,
     },
-    margin: theme.spacing(6)
+    margin: theme.spacing(6),
   },
   decodedIdToken: {
     border: `1px solid ${theme.palette.divider}`,

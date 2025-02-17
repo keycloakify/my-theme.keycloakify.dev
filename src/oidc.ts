@@ -2,15 +2,10 @@ import { createReactOidc } from "oidc-spa/react";
 import { createMockReactOidc } from "oidc-spa/mock/react";
 
 export const { OidcProvider, useOidc } = (() => {
-  const isAuthGloballyRequired = true;
-
-  const publicUrl = import.meta.env.BASE_URL;
-
   if (import.meta.env.DEV) {
     return createMockReactOidc({
-      isUserInitiallyLoggedIn: true,
-      isAuthGloballyRequired,
-      publicUrl,
+      autoLogin: true,
+      homeUrl: import.meta.env.BASE_URL,
       mockedTokens: {
         decodedIdToken: {
           exp: 1722824053,
@@ -63,29 +58,26 @@ export const { OidcProvider, useOidc } = (() => {
   };
 
   const realm = getParam({ name: "realm", defaultValue: "myrealm" });
+  const port = getParam({ name: "port", defaultValue: "8080" });
+  const kcHttpRelativePath = getParam({
+    name: "kcHttpRelativePath",
+    defaultValue: "",
+  });
 
-  const issuerUri = (() => {
-    const port = getParam({ name: "port", defaultValue: "8080" });
-    const kcHttpRelativePath = getParam({
-      name: "kcHttpRelativePath",
-      defaultValue: "",
-    });
-
-    return `http://localhost:${port}${kcHttpRelativePath}/realms/${realm}`;
-  })();
+  const issuerUri = `http://localhost:${port}${kcHttpRelativePath}/realms/${realm}`;
 
   const clientId = getParam({ name: "client", defaultValue: "myclient" });
 
   return createReactOidc({
     issuerUri,
     clientId,
-    publicUrl,
-    isAuthGloballyRequired,
+    homeUrl: import.meta.env.BASE_URL,
+    autoLogin: true,
     decodedIdTokenSchema: {
       parse: (decodedIdToken) =>
         decodedIdToken as { preferred_username: string },
     },
-    doEnableDebugLogs: true,
+    debugLogs: true,
   });
 })();
 
