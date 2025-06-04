@@ -19,4 +19,8 @@ you to your Keycloak login pages, it assumes that:
   - Valid redirect URIs: `https://my-theme.keycloakify.dev/*`, `http://localhost*` (localhost is if you are running this web app locally)  
   - Valid post logout redirect URIs: `https://my-theme.keycloakify.dev/*`, `http://localhost*` 
 
+You can changes those default values using query params, for example:
+`http://localhost:5173/?realm=myrealm&port=8080&client=myclient&kcHttpRelativePath=/auth`  
+(The only thing that you can't change is that the Keycloak is assumed to be running on your localhost.)
+
 To learn more heads over to [the Keycloakify homepage](https://www.keycloakify.dev/).
