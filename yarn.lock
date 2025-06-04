@@ -1681,10 +1681,10 @@ object-assign@^4.1.1:
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
 
-oidc-spa@^6.9.9:
-  version "6.9.9"
-  resolved "https://registry.yarnpkg.com/oidc-spa/-/oidc-spa-6.9.9.tgz#6f216b991be7acbb71ba017f9904e5b518029b4e"
-  integrity sha512-k86tsi4P2QwaVXztIfgiHi3XPkKn8hStFjjLGqBvwC9bNOM/yCWV/qnmxJchbyp5tLg3MDPn8ViHcPIriiT9fA==
+oidc-spa@^6.14.0:
+  version "6.14.0"
+  resolved "https://registry.yarnpkg.com/oidc-spa/-/oidc-spa-6.14.0.tgz#38ec7d2a5d76829421bb3318c5f8f33878f0d227"
+  integrity sha512-RpdvmwDy54YGACn6jv3UpPwg2U1eRfgEhgX3M/OOtB3bFOjN+MnmpuKLwPSr2/gg2zMUXLsoap9RUB76PrbTsQ==
 
 once@^1.3.0:
   version "1.4.0"
