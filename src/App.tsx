@@ -1,10 +1,14 @@
-import { useOidc, readRealm } from "oidc";
+import {
+  useOidc,
+  OidcInitializationGate,
+  OidcInitializationErrorGate,
+} from "oidc";
+import { createKeycloakUtils } from "oidc-spa/keycloak";
 import { tss } from "tss-react/mui";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import Alert from "@mui/material/Alert";
-import { OidcProvider } from "oidc";
 import Divider from "@mui/material/Divider";
 import ToolTip from "@mui/material/Tooltip";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -14,73 +18,78 @@ export function App() {
   const { css } = useStyles();
 
   return (
-    <OidcProvider
-      ErrorFallback={({ initializationError }) => (
-        <div
-          className={css({
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100vh",
-          })}
-        >
-          <Alert severity="error" title="Initialization error">
-            {initializationError.isAuthServerLikelyDown ? (
-              <>
-                Your local Keycloak doesn't seem to be running.
-                <br />
-                If you are using uBlock Origin, or some other ad blocker, it
-                might be blocking the redirection.
-                <br />
-                Please refer to the{" "}
-                <Link
-                  target="_blank"
-                  href="https://docs.keycloakify.dev/testing-your-theme/in-a-keycloak-docker-container"
-                >
-                  documentation
-                </Link>
-                .
-              </>
-            ) : (
-              <>
-                You've modified the configuration of the Keycloak server in a
-                way that is incompatible with
-                <Link
-                  target="_blank"
-                  href="https://github.com/keycloakify/my-theme.keycloakify.dev"
-                >
-                  this test application
-                </Link>
-                .<br />
-                You can open the console to see the error message.
-              </>
-            )}
-          </Alert>
-        </div>
-      )}
-      fallback={
-        <div
-          className={css({
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100vh",
-          })}
-        >
-          <Typography variant="h4">
-            <CircularProgress
+    <>
+      <OidcInitializationGate
+        fallback={
+          <div
+            className={css({
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100vh",
+            })}
+          >
+            <Typography variant="h4">
+              <CircularProgress
+                className={css({
+                  position: "relative",
+                  top: "0.20em",
+                })}
+              />
+              &nbsp; Redirecting to your local Keycloak server...
+            </Typography>
+          </div>
+        }
+      >
+        <OidcInitializationErrorGate
+          errorComponent={({ oidcInitializationError }) => (
+            <div
               className={css({
-                position: "relative",
-                top: "0.20em",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100vh",
               })}
-            />
-            &nbsp; Redirecting to your local Keycloak server...
-          </Typography>
-        </div>
-      }
-    >
-      <ContextualizedApp />
-    </OidcProvider>
+            >
+              <Alert severity="error" title="Initialization error">
+                {oidcInitializationError.isAuthServerLikelyDown ? (
+                  <>
+                    Your local Keycloak doesn't seem to be running.
+                    <br />
+                    If you are using uBlock Origin, or some other ad blocker, it
+                    might be blocking the redirection.
+                    <br />
+                    Please refer to the{" "}
+                    <Link
+                      target="_blank"
+                      href="https://docs.keycloakify.dev/testing-your-theme/in-a-keycloak-docker-container"
+                    >
+                      documentation
+                    </Link>
+                    .
+                  </>
+                ) : (
+                  <>
+                    You've modified the configuration of the Keycloak server in
+                    a way that is incompatible with
+                    <Link
+                      target="_blank"
+                      href="https://github.com/keycloakify/my-theme.keycloakify.dev"
+                    >
+                      this test application
+                    </Link>
+                    .<br />
+                    You can open the console to see the error message.
+                  </>
+                )}
+              </Alert>
+            </div>
+          )}
+        >
+          <ContextualizedApp />
+        </OidcInitializationErrorGate>
+      </OidcInitializationGate>
+    </>
   );
 }
 
@@ -88,12 +97,15 @@ export function ContextualizedApp() {
   const {
     logout,
     goToAuthServer,
+    decodedIdToken,
     backFromAuthServer,
-    oidcTokens,
-    params: { clientId, issuerUri },
+    clientId,
+    issuerUri,
+    validRedirectUri
   } = useOidc();
 
-  const realm = readRealm({ issuerUri });
+
+  const keycloakUtils = createKeycloakUtils({ issuerUri });
 
   const { classes } = useStyles();
 
@@ -103,7 +115,7 @@ export function ContextualizedApp() {
         <div className={classes.content}>
           <Typography variant="h2">
             You are now authenticated as{" "}
-            <strong>{oidcTokens.decodedIdToken.preferred_username}</strong>
+            <strong>{decodedIdToken.preferred_username}</strong>
           </Typography>
 
           <br />
@@ -112,7 +124,7 @@ export function ContextualizedApp() {
           <Typography variant="h6">
             Decoded JWT of the Open ID Connect ID token:
           </Typography>
-          <pre>{JSON.stringify(oidcTokens.decodedIdToken, null, 2)}</pre>
+          <pre>{JSON.stringify(decodedIdToken, null, 2)}</pre>
           <br />
           <Divider />
           <br />
@@ -225,11 +237,12 @@ export function ContextualizedApp() {
             Keycloak <strong>Account</strong> UI
           </Typography>
           <Typography variant="body1" sx={{ mb: 1 }}>
-            Link to the Keycloak Account UI for the <code>{realm}</code> realm:
+            Link to the Keycloak Account UI for the <code>{keycloakUtils.issuerUriParsed.realm}</code> realm:
           </Typography>
           <Typography variant="body1">
             {(() => {
-              const url = `${issuerUri}/account?referrer=${clientId}&referrer_uri=${window.location.origin}`;
+
+              const url = keycloakUtils.getAccountUrl({ clientId, validRedirectUri});
 
               return (
                 <Link href={url} target="_blank" rel="noopener noreferrer">
@@ -247,14 +260,15 @@ export function ContextualizedApp() {
             Keycloak <strong>Admin</strong> UI
           </Typography>
           <Typography variant="body1" sx={{ mb: 1 }}>
-            Link to the Keycloak Admin UI for the <code>{realm}</code> realm.
+            Link to the Keycloak Admin UI for the <code>{keycloakUtils.issuerUriParsed.realm}</code> realm.
             Note that user{" "}
-            <code>{oidcTokens.decodedIdToken.preferred_username}</code> has to
+            <code>{decodedIdToken.preferred_username}</code> has to
             have the <code>realm-admin</code> role to access this page:
           </Typography>
           <Typography variant="body1">
             {(() => {
-              const url = `${new URL(issuerUri).origin}/admin/${realm}/console`;
+
+              const url = keycloakUtils.adminConsoleUrl;
 
               return (
                 <Link href={url} target="_blank" rel="noopener noreferrer">
